@@ -9,7 +9,7 @@
 const CONFIG = {
   // Paste your Google Apps Script Web App URL here.
   // It looks like: https://script.google.com/macros/s/AKfycb.../exec
-  DATA_SOURCE_URL: "YOUR_DEPLOYMENT_ID",
+  DATA_SOURCE_URL: "10_Bzw--4t-vltpkddKAdm9r-L0sQ3uEMMRGZ4FVx2d-rcAZmgRL4O4dq",
 
   // How often (in minutes) the dashboard silently re-fetches data in
   // the background so open tabs pick up sheet edits automatically.
@@ -17,5 +17,5 @@ const CONFIG = {
   // page load / manual browser refresh).
   REFRESH_INTERVAL_MINUTES: 15,
 
-  APP_TITLE: "Metro by T-Mobile — Dealer Refund Dashboard"
+  APP_TITLE: "Metro by T-Mobile — Refund Dashboard"
 };
