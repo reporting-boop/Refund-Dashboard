@@ -9,7 +9,7 @@
 const CONFIG = {
   // Paste your Google Apps Script Web App URL here.
   // It looks like: https://script.google.com/macros/s/AKfycb.../exec
-  DATA_SOURCE_URL: "10_Bzw--4t-vltpkddKAdm9r-L0sQ3uEMMRGZ4FVx2d-rcAZmgRL4O4dq",
+  DATA_SOURCE_URL: "https://script.google.com/macros/s/AKfycbwJhF8X14DsbwBr4kL6lULcfmWYZC1NVD6LdmhlXHTFCKugRJ5jme-L8favIZSmwPlB/exec",
 
   // How often (in minutes) the dashboard silently re-fetches data in
   // the background so open tabs pick up sheet edits automatically.
