@@ -126,14 +126,6 @@ function renderShell(){
       </div>
       <nav class="nav" id="navList"></nav>
       <div class="sidebar-spacer"></div>
-      <div class="history-card">
-        <div class="hc-top">
-          <div class="hc-icon">${ic('clock')}</div>
-          <div class="hc-menu">${ic('dots')}</div>
-        </div>
-        <div class="hc-text"><b>Refresh your data</b><span>Drop in a new export anytime — the whole report updates instantly.</span></div>
-        <button class="hc-btn" id="hcUploadBtn">Go to Data & Upload</button>
-      </div>
     </aside>
     <div class="main">
       <header class="topbar">
@@ -585,7 +577,7 @@ function renderKPIRows(idx, s){
     kpiCard({icon:'dollar',    iconBg:'var(--primary-tint)',  iconColor:'var(--primary)',  label:'Refund Total Price',  value:fmtMoney(s.netRevenue),          valueColor:'var(--negative)', delta:deltaBadge(dRevenue),    tip:'Sum of price for all refund line items.'}),
     kpiCard({icon:'box',       iconBg:'var(--teal-tint)',     iconColor:'var(--teal)',     label:'Refund Qty',          value:fmtNum(Math.abs(s.netUnits)),                                  delta:deltaBadge(dUnits),      tip:'Sum of qty for all refund rows.'}),
     kpiCard({icon:'table',     iconBg:'var(--amber-tint)',    iconColor:'#9C6B14',         label:'Refund Invoices',     value:fmtNum(s.invoiceCount),                                        delta:deltaBadge(dInv),        tip:'Distinct invoices with a refund.'}),
-    kpiCard({icon:'trendDown', iconBg:'var(--negative-tint)',iconColor:'var(--negative)',  label:'Refund Transactions', value:fmtNum(s.rowCount),                                            delta:deltaBadge(dTxn,false),  tip:'Total refund line items.'})
+    kpiCard({icon:'trendDown', iconBg:'var(--negative-tint)',iconColor:'var(--negative)',  label:'Total Count Of Rows', value:fmtNum(s.rowCount),                                            delta:deltaBadge(dTxn,false),  tip:'Total refund line items.'})
   ].join('');
 
   const kpiRow2El = document.getElementById('kpiRow2');
