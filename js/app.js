@@ -220,7 +220,7 @@ const FILTER_DROPDOWNS = [
   {key:'markets', dimKey:'markets', label:'Market'},
   {key:'managers', dimKey:'managers', label:'DM'},
   {key:'stores', dimKey:'stores', label:'Store Name'},
-  {key:'employees', dimKey:'employees', label:'Employee Name'},
+  {key:'employees', dimKey:'employees', label:'NTID + Employee Name'},
   {key:'items', dimKey:'items', label:'itmdesc'},
   {key:'categories', dimKey:'categories', label:'Category'},
   {key:'acttypes', dimKey:'acttypes', label:'acttype'},
