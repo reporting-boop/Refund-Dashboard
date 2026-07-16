@@ -136,7 +136,6 @@ function renderShell(){
         </div>
         <div class="topbar-spacer"></div>
         <div class="topbar-right">
-          <button class="upload-btn" id="topUploadBtn">${ic('upload')} <span>Upload data</span></button>
           <div class="profile">
             <div class="avatar">MT</div>
             <div class="profile-text"><b>Metro by T-Mobile</b><span>Refund Dashboard</span></div>
