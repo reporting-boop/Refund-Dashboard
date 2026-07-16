@@ -126,6 +126,14 @@ function renderShell(){
       </div>
       <nav class="nav" id="navList"></nav>
       <div class="sidebar-spacer"></div>
+      <div class="history-card">
+        <div class="hc-top">
+          <div class="hc-icon">${ic('clock')}</div>
+          <div class="hc-menu">${ic('dots')}</div>
+        </div>
+        <div class="hc-text"><b>Refresh your data</b><span>Drop in a new export anytime — the whole report updates instantly.</span></div>
+        <button class="hc-btn" id="hcUploadBtn">Go to Data & Upload</button>
+      </div>
     </aside>
     <div class="main">
       <header class="topbar">
