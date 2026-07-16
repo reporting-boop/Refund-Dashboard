@@ -1,4 +1,3 @@
-
 /* ===================================================================
    METRO PERFORMANCE DASHBOARD — DATA UPLOAD / REPLACE
    Lets the client drop in a refreshed export (same column layout, any
@@ -11,6 +10,7 @@ const REQUIRED_FIELDS = ['market','store','status','qty','price','employee','dat
 const FIELD_ALIASES = {
   market:   ['markets','market','region','area'],
   custno:   ['custno','customerno','custid','customerid','storeid','storecode','accountnumber'],
+  ntid:     ['ntid','employeentid','empntid','employeeid','empid'],
   store:    ['storename','store','company','location','dealer','dealername','address'],
   manager:  ['dm','districtmanager','districtmgr','manager','regionalmanager','areamanager'],
   item:     ['item','itemcode','sku','skucode','partnumber'],
@@ -113,7 +113,9 @@ function parseWorkbookToPayload(rows, headers, filename){
     const taxamount = colMap.taxamount ? (Number(row[colMap.taxamount]) || 0) : 0;
     const subtotal = colMap.subtotal ? (Number(row[colMap.subtotal]) || 0) : price;
     const profit = Number(row[colMap.profit]) || 0;
-    const employeeV = String(row[colMap.employee]??'Unassigned').trim() || 'Unassigned';
+    const ntidV = colMap.ntid ? String(row[colMap.ntid]??'').trim() : '';
+    const employeeName = String(row[colMap.employee]??'Unassigned').trim() || 'Unassigned';
+    const employeeV = ntidV ? (ntidV+' — '+employeeName) : employeeName;
     const acttypeV = colMap.acttype ? (String(row[colMap.acttype]??'').trim() || 'Non-Activation') : 'Non-Activation';
     const paytypeV = colMap.paytype ? (String(row[colMap.paytype]??'').trim() || 'Unknown') : 'Unknown';
     const invnoV = colMap.invno ? Number(row[colMap.invno]) || (r+1) : (r+1);
@@ -184,10 +186,10 @@ function handleWorkbookFile(file){
 }
 
 function downloadSampleTemplate(){
-  const headers = ['Market','custno','DM','Store Name','item','Category','itmdesc','Status','qty','price','discount','taxamount','subtotal','profit','Employee Name','Invoice','Date','acttype','paytype'];
+  const headers = ['Market','custno','DM','Store Name','item','Category','itmdesc','Status','qty','price','discount','taxamount','subtotal','profit','NTID','Employee Name','Invoice','Date','acttype','paytype'];
   const sample = [
-    ['ARIZONA','TECH10590','Shoeb Naqvi','10590 N 90TH AVE STE 4-SL-219','610214679659','Phone','SAM X218U TAB A9+ 5G 64G GRY KIT','Sale',1,49.99,0,2.64,32.63,24.74,'Jane Doe',91012,'2026-06-17','New Activation','Cash'],
-    ['DALLAS','TECH40780','Imran Shaikh','4078 E LANCASTER AVE','356610173044799','Accessory','MOT XT24171 G 5G 128G GRN','Sale',1,0,0,0,0,143.00,'John Smith',91013,'2026-06-17','Upgrade','Debit Card']
+    ['ARIZONA','TECH10590','Shoeb Naqvi','10590 N 90TH AVE STE 4-SL-219','610214679659','Phone','SAM X218U TAB A9+ 5G 64G GRY KIT','Sale',1,49.99,0,2.64,32.63,24.74,'AYC42097','Jane Doe',91012,'2026-06-17','New Activation','Cash'],
+    ['DALLAS','TECH40780','Imran Shaikh','4078 E LANCASTER AVE','356610173044799','Accessory','MOT XT24171 G 5G 128G GRN','Sale',1,0,0,0,0,143.00,'PYN80494','John Smith',91013,'2026-06-17','Upgrade','Debit Card']
   ];
   const csv = [headers.join(',')].concat(sample.map(r=>r.map(v=>typeof v==='string'&&v.includes(',')?`"${v}"`:v).join(','))).join('\n');
   const blob = new Blob([csv], {type:'text/csv'});
@@ -196,4 +198,3 @@ function downloadSampleTemplate(){
   a.download = 'sales_data_template.csv';
   document.body.appendChild(a); a.click(); a.remove();
 }
-
