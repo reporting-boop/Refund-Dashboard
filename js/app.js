@@ -122,7 +122,7 @@ function renderShell(){
       <button class="collapse-toggle" id="collapseToggle" title="Collapse sidebar">${ic('chevL')}</button>
       <div class="brand">
         <div class="brand-mark">M</div>
-        <div class="brand-text"><b>Metro Refund Dashboard</b><span>SDR BI Dashboard</span></div>
+        <div class="brand-text"><b>Metro Performance</b><span>SDR BI Dashboard</span></div>
       </div>
       <nav class="nav" id="navList"></nav>
       <div class="sidebar-spacer"></div>
@@ -563,10 +563,28 @@ function renderOverview(){
   const scatSearch = document.getElementById('scatSearch');
   if(scatSearch) scatSearch.oninput = ()=>renderStoreCategoryTable(getFilteredIndices(), scatSearch.value.trim().toLowerCase());
 }
+function ordinalSuffix(n){
+  const j = n % 10, k = n % 100;
+  if(j===1 && k!==11) return n+'st';
+  if(j===2 && k!==12) return n+'nd';
+  if(j===3 && k!==13) return n+'rd';
+  return n+'th';
+}
+const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
 function overviewSubtitle(){
   if(!DB.meta || !DB.meta.source) return 'All markets, stores and activation types';
-  const range = DB.dims.dates.length? `${fmtDateShort(DB.dims.dates[0])} – ${fmtDateShort(DB.dims.dates[DB.dims.dates.length-1])}` : '';
-  return `Source: ${DB.meta.source} • ${fmtNum(DB.meta.rowCount)} line items • ${range}`;
+  const sortedDates = (DB.dims.dates||[]).slice().sort();
+  let rangeText = '';
+  if(sortedDates.length){
+    const start = new Date(sortedDates[0]+'T00:00:00');
+    const end = new Date(sortedDates[sortedDates.length-1]+'T00:00:00');
+    const startLabel = `${MONTHS_SHORT[start.getMonth()]} ${start.getFullYear()}`;
+    const endLabel = `${ordinalSuffix(end.getDate())} ${MONTHS_FULL[end.getMonth()]} ${end.getFullYear()}`;
+    rangeText = `The Data has Updated ${startLabel} Till ${endLabel}`;
+  }
+  return `Source: ${DB.meta.source} • ${fmtNum(DB.meta.rowCount)} line items • ${rangeText}`;
 }
 
 function renderKPIRows(idx, s){
@@ -585,8 +603,8 @@ function renderKPIRows(idx, s){
   const kpiRow2El = document.getElementById('kpiRow2');
   kpiRow2El.style.gridTemplateColumns = 'repeat(2,1fr)';
   kpiRow2El.innerHTML = [
-    kpiCard({icon:'store', iconBg:'var(--teal-tint)', iconColor:'var(--teal)', label:'Total Stores', value:fmtNum(s.activeStores)+' / '+fmtNum(DB.dims.stores.length), compact:true}),
-    kpiCard({icon:'users', iconBg:'var(--amber-tint)', iconColor:'#9C6B14', label:'Total Employees', value:fmtNum(s.activeEmployees)+' / '+fmtNum(DB.dims.employees.length), compact:true})
+    kpiCard({icon:'store', iconBg:'var(--teal-tint)', iconColor:'var(--teal)', label:'Store Name', value:fmtNum(s.activeStores)+' / '+fmtNum(DB.dims.stores.length), compact:true}),
+    kpiCard({icon:'users', iconBg:'var(--amber-tint)', iconColor:'#9C6B14', label:'Employee Name', value:fmtNum(s.activeEmployees)+' / '+fmtNum(DB.dims.employees.length), compact:true})
   ].join('');
 
   // Row 3 — Category KPIs: QPAY, Phone, Accessory, Others
@@ -626,7 +644,7 @@ function renderKPIRows(idx, s){
       </div>
       <div class="kpi-cat-val" style="color:${col}">${fmtMoney(Math.abs(d.price),true)}</div>
       <div class="kpi-cat-row">
-        <span class="kpi-cat-chip">${fmtNum(d.count)} Counts</span>
+        <span class="kpi-cat-chip">${fmtNum(d.count)} txns</span>
         <span class="kpi-cat-chip">${fmtNum(d.invs.size)} inv</span>
       </div>
     </div>`;
