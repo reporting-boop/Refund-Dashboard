@@ -149,8 +149,10 @@ function renderShell(){
   renderNav();
   document.getElementById('collapseToggle').onclick = ()=>{ STATE.sidebarCollapsed=!STATE.sidebarCollapsed; document.getElementById('sidebar').classList.toggle('collapsed', STATE.sidebarCollapsed); document.getElementById('collapseToggle').innerHTML = ic(STATE.sidebarCollapsed?'chevR':'chevL'); };
   document.getElementById('menuBtn').onclick = ()=>{ STATE.mobileNavOpen=!STATE.mobileNavOpen; document.getElementById('sidebar').classList.toggle('mobile-open', STATE.mobileNavOpen); };
-  document.getElementById('hcUploadBtn').onclick = ()=>goTo('data');
-  document.getElementById('topUploadBtn').onclick = ()=>goTo('data');
+  const hcUploadBtn = document.getElementById('hcUploadBtn');
+  if(hcUploadBtn) hcUploadBtn.onclick = ()=>goTo('data');
+  const topUploadBtn = document.getElementById('topUploadBtn');
+  if(topUploadBtn) topUploadBtn.onclick = ()=>goTo('data');
   document.addEventListener('click', (e)=>{
     if(!STATE.mobileNavOpen) return;
     const sb = document.getElementById('sidebar'), mb = document.getElementById('menuBtn');
@@ -561,10 +563,28 @@ function renderOverview(){
   const scatSearch = document.getElementById('scatSearch');
   if(scatSearch) scatSearch.oninput = ()=>renderStoreCategoryTable(getFilteredIndices(), scatSearch.value.trim().toLowerCase());
 }
+function ordinalSuffix(n){
+  const j = n % 10, k = n % 100;
+  if(j===1 && k!==11) return n+'st';
+  if(j===2 && k!==12) return n+'nd';
+  if(j===3 && k!==13) return n+'rd';
+  return n+'th';
+}
+const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
 function overviewSubtitle(){
   if(!DB.meta || !DB.meta.source) return 'All markets, stores and activation types';
-  const range = DB.dims.dates.length? `${fmtDateShort(DB.dims.dates[0])} – ${fmtDateShort(DB.dims.dates[DB.dims.dates.length-1])}` : '';
-  return `Source: ${DB.meta.source} • ${fmtNum(DB.meta.rowCount)} line items • ${range}`;
+  const sortedDates = (DB.dims.dates||[]).slice().sort();
+  let rangeText = '';
+  if(sortedDates.length){
+    const start = new Date(sortedDates[0]+'T00:00:00');
+    const end = new Date(sortedDates[sortedDates.length-1]+'T00:00:00');
+    const startLabel = `${MONTHS_SHORT[start.getMonth()]} ${start.getFullYear()}`;
+    const endLabel = `${ordinalSuffix(end.getDate())} ${MONTHS_FULL[end.getMonth()]} ${end.getFullYear()}`;
+    rangeText = `The Data has Updated ${startLabel} Till ${endLabel}`;
+  }
+  return `Source: ${DB.meta.source} • ${fmtNum(DB.meta.rowCount)} line items • ${rangeText}`;
 }
 
 function renderKPIRows(idx, s){
@@ -583,8 +603,8 @@ function renderKPIRows(idx, s){
   const kpiRow2El = document.getElementById('kpiRow2');
   kpiRow2El.style.gridTemplateColumns = 'repeat(2,1fr)';
   kpiRow2El.innerHTML = [
-    kpiCard({icon:'store', iconBg:'var(--teal-tint)', iconColor:'var(--teal)', label:'Store Name', value:fmtNum(s.activeStores)+' / '+fmtNum(DB.dims.stores.length), compact:true}),
-    kpiCard({icon:'users', iconBg:'var(--amber-tint)', iconColor:'#9C6B14', label:'Employee Name', value:fmtNum(s.activeEmployees)+' / '+fmtNum(DB.dims.employees.length), compact:true})
+    kpiCard({icon:'store', iconBg:'var(--teal-tint)', iconColor:'var(--teal)', label:'Total Stores', value:fmtNum(s.activeStores)+' / '+fmtNum(DB.dims.stores.length), compact:true}),
+    kpiCard({icon:'users', iconBg:'var(--amber-tint)', iconColor:'#9C6B14', label:'Total Employee', value:fmtNum(s.activeEmployees)+' / '+fmtNum(DB.dims.employees.length), compact:true})
   ].join('');
 
   // Row 3 — Category KPIs: QPAY, Phone, Accessory, Others
@@ -624,8 +644,8 @@ function renderKPIRows(idx, s){
       </div>
       <div class="kpi-cat-val" style="color:${col}">${fmtMoney(Math.abs(d.price),true)}</div>
       <div class="kpi-cat-row">
-        <span class="kpi-cat-chip">${fmtNum(d.count)} txns</span>
-        <span class="kpi-cat-chip">${fmtNum(d.invs.size)} inv</span>
+        <span class="kpi-cat-chip">${fmtNum(d.count)} Counts</span>
+        <span class="kpi-cat-chip">${fmtNum(d.invs.size)} Invoice</span>
       </div>
     </div>`;
   }
@@ -1342,7 +1362,7 @@ function renderDataPage(){
           <div class="data-meta-chip"><b>${fmtMoney(totalPriceOfAllRows())}</b><span>Total Price (SUM of price column)</span></div>
           <div class="data-meta-chip"><b>${(DB.meta&&DB.meta.generated)||'—'}</b><span>Last refreshed</span></div>
         </div>
-        <button class="btn-secondary" id="resetBtn" style="margin-top:14px;">${ic('refresh')} Reload live data from Google Sheets</button>
+        <button class="btn-secondary" id="resetBtn" style="margin-top:14px;">${ic('refresh')} Reload live data from Supabase</button>
       </div>
       <div class="panel">
         <div class="panel-head"><div class="panel-title">Expected columns</div><div class="panel-sub">Headers can appear in any order — common naming variations are matched automatically.</div></div>
@@ -1374,11 +1394,11 @@ function renderDataPage(){
   document.getElementById('browseBtn').onclick = (e)=>{ e.stopPropagation(); fileInput.click(); };
   document.getElementById('templateBtn').onclick = (e)=>{ e.stopPropagation(); downloadSampleTemplate(); };
   document.getElementById('resetBtn').onclick = async ()=>{
-    toast('Reloading data from Google Sheets…','info');
+    toast('Reloading data from Supabase…','info');
     try{
       const payload = await loadDataset();
       loadPayloadObject(payload); clearAllFilters(); STATE.calPeriodIdx=null; STATE.tableSearch={}; STATE.tableSort={}; STATE.tablePage={};
-      toast('Reloaded the live dataset from Google Sheets.','success'); goTo('overview');
+      toast('Reloaded the live dataset from Supabase.','success'); goTo('overview');
     }catch(e){ toast('Could not reload live data: '+(e&&e.message?e.message:e),'error'); }
   };
   fileInput.onchange = ()=>{ if(fileInput.files[0]) processUploadedFile(fileInput.files[0]); };
@@ -1431,8 +1451,8 @@ function showBootError(err){
     + 'font-family:Arimo,Arial,sans-serif;color:#241C3F;text-align:left;box-shadow:0 14px 38px rgba(58,31,158,.12)">'
     + '<div style="font-weight:700;font-size:17px;margin-bottom:8px;">Couldn\'t load dashboard data</div>'
     + '<div style="font-size:14px;color:#6B6680;line-height:1.5;">'+ msg
-    + '<br><br>Check that <code>config.js</code> has the correct Apps Script Web App URL, '
-    + 'that the deployment is set to "Anyone can access", and that you have an internet connection.'
+    + '<br><br>Check that <code>config.js</code> has the correct Supabase URL and anon key, '
+    + 'that Row Level Security allows anon SELECT on the table, and that you have an internet connection.'
     + '</div></div>';
   if(overlay){ overlay.innerHTML = html; } else { document.body.insertAdjacentHTML('afterbegin', html); }
 }
