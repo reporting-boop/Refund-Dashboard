@@ -98,7 +98,7 @@ const NAV_ITEMS = [
   {page:'stores',        icon:'store',     label:'Store Name',    entity:'store'},
   {page:'employees',     icon:'users',     label:'Employee Name', entity:'employee'},
   {page:'products',      icon:'box',       label:'itmdesc',       entity:'product'},
-  {page:'Details',  icon:'table',     label:'Details'},
+  {page:'Transactions',  icon:'table',     label:'Transactions'},
 ];
 
 /* ---------------------------- NAVIGATION ---------------------------- */
