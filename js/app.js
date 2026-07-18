@@ -603,8 +603,8 @@ function renderKPIRows(idx, s){
   const kpiRow2El = document.getElementById('kpiRow2');
   kpiRow2El.style.gridTemplateColumns = 'repeat(2,1fr)';
   kpiRow2El.innerHTML = [
-    kpiCard({icon:'store', iconBg:'var(--teal-tint)', iconColor:'var(--teal)', label:'Store Name', value:fmtNum(s.activeStores)+' / '+fmtNum(DB.dims.stores.length), compact:true}),
-    kpiCard({icon:'users', iconBg:'var(--amber-tint)', iconColor:'#9C6B14', label:'Employee Name', value:fmtNum(s.activeEmployees)+' / '+fmtNum(DB.dims.employees.length), compact:true})
+    kpiCard({icon:'store', iconBg:'var(--teal-tint)', iconColor:'var(--teal)', label:'Total Stores', value:fmtNum(s.activeStores)+' / '+fmtNum(DB.dims.stores.length), compact:true}),
+    kpiCard({icon:'users', iconBg:'var(--amber-tint)', iconColor:'#9C6B14', label:'Total Employee', value:fmtNum(s.activeEmployees)+' / '+fmtNum(DB.dims.employees.length), compact:true})
   ].join('');
 
   // Row 3 — Category KPIs: QPAY, Phone, Accessory, Others
