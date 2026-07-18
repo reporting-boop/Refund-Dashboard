@@ -644,8 +644,8 @@ function renderKPIRows(idx, s){
       </div>
       <div class="kpi-cat-val" style="color:${col}">${fmtMoney(Math.abs(d.price),true)}</div>
       <div class="kpi-cat-row">
-        <span class="kpi-cat-chip">${fmtNum(d.count)} txns</span>
-        <span class="kpi-cat-chip">${fmtNum(d.invs.size)} inv</span>
+        <span class="kpi-cat-chip">${fmtNum(d.count)} Counts</span>
+        <span class="kpi-cat-chip">${fmtNum(d.invs.size)} Invoice</span>
       </div>
     </div>`;
   }
